@@ -14,3 +14,6 @@ Anwendung:
 -	Korrigiert wechselnde Einheiten beim Export (W, kW, mW) zu W. Beim Sunny Export kann das vorkommen, je nach Wochen/Monats Ansicht.
 -	Beherrscht die Situation unterschiedlicher Spalten (z.B. Verbraucher  unter dem Jahr hinzugekommen oder weggefallen). Spalte wird mit 0 für jene Monate zu welchen keine Daten vorliegen aufgefüllt.
 -	Sortiert die Daten nach Datum.
+
+In Excel können die Daten z.B. in dieser Form dargestellt werden.
+![](https://github.com/Alfa-Soft/SMA-Tools/blob/main/CSV-Converter/Misc/xlsPivot.png)
