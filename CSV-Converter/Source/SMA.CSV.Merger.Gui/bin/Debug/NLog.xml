@@ -2582,7 +2582,17 @@
             Variables defined in xml or in API. name is case case insensitive. 
             </summary>
         </member>
+        <member name="P:NLog.Config.LoggingConfiguration.LogFactory">
+            <summary>
+            Gets the factory that will be configured
+            </summary>
+        </member>
         <member name="M:NLog.Config.LoggingConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NLog.Config.LoggingConfiguration" /> class.
+            </summary>
+        </member>
+        <member name="M:NLog.Config.LoggingConfiguration.#ctor(NLog.LogFactory)">
             <summary>
             Initializes a new instance of the <see cref="T:NLog.Config.LoggingConfiguration" /> class.
             </summary>
@@ -2822,6 +2832,19 @@
             Copies all variables from provided dictionary into current configuration variables. 
             </summary>
             <param name="masterVariables">Master variables dictionary</param>
+        </member>
+        <member name="M:NLog.Config.LoggingConfiguration.ExpandSimpleVariables(System.String)">
+            <summary>
+            Replace a simple variable with a value. The orginal value is removed and thus we cannot redo this in a later stage.
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NLog.Config.LoggingConfiguration.CheckUnusedTargets">
+            <summary>
+            Checks whether unused targets exist. If found any, just write an internal log at Warn level.
+            <remarks>If initializing not started or failed, then checking process will be canceled</remarks>
+            </summary>
         </member>
         <member name="T:NLog.Config.LoggingConfigurationChangedEventArgs">
             <summary>
@@ -3506,12 +3529,6 @@
             </summary>
             <param name="rootContentElement">Root NLog configuration xml element</param>
         </member>
-        <member name="M:NLog.Config.XmlLoggingConfiguration.CheckUnusedTargets">
-            <summary>
-            Checks whether unused targets exist. If found any, just write an internal log at Warn level.
-            <remarks>If initializing not started or failed, then checking process will be canceled</remarks>
-            </summary>
-        </member>
         <member name="M:NLog.Config.XmlLoggingConfiguration.ConfigureFromFile(System.String,System.Boolean)">
             <summary>
             Add a file with configuration. Check if not already included.
@@ -3571,15 +3588,6 @@
             <param name="baseDirectory">base directory in case if <paramref name="fileMask"/> is relative</param>
             <param name="fileMask">relative or absolute fileMask</param>
             <param name="autoReloadDefault"></param>
-        </member>
-        <member name="M:NLog.Config.XmlLoggingConfiguration.ExpandSimpleVariables(System.String)">
-            <summary>
-            Replace a simple variable with a value. The orginal value is removed and thus we cannot redo this in a later stage.
-            
-            Use for that: <see cref="T:NLog.LayoutRenderers.VariableLayoutRenderer"/>
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
         </member>
         <member name="T:NLog.Filters.ConditionBasedFilter">
             <summary>
@@ -3932,6 +3940,61 @@
             Filter Lookup Key (immutable)
             </summary>
         </member>
+        <member name="T:NLog.Fluent.Log">
+            <summary>
+            A global logging class using caller info to find the logger.
+            </summary>
+        </member>
+        <member name="M:NLog.Fluent.Log.Level(NLog.LogLevel,System.String)">
+            <summary>
+            Starts building a log event with the specified <see cref="T:NLog.LogLevel" />.
+            </summary>
+            <param name="logLevel">The log level.</param>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is the file path at the time of compile.</param>
+            <returns>An instance of the fluent <see cref="T:NLog.Fluent.LogBuilder"/>.</returns>
+        </member>
+        <member name="M:NLog.Fluent.Log.Trace(System.String)">
+            <summary>
+            Starts building a log event at the <c>Trace</c> level.
+            </summary>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is the file path at the time of compile.</param>
+            <returns>An instance of the fluent <see cref="T:NLog.Fluent.LogBuilder"/>.</returns>
+        </member>
+        <member name="M:NLog.Fluent.Log.Debug(System.String)">
+            <summary>
+            Starts building a log event at the <c>Debug</c> level.
+            </summary>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is the file path at the time of compile.</param>
+            <returns>An instance of the fluent <see cref="T:NLog.Fluent.LogBuilder"/>.</returns>
+        </member>
+        <member name="M:NLog.Fluent.Log.Info(System.String)">
+            <summary>
+            Starts building a log event at the <c>Info</c> level.
+            </summary>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is the file path at the time of compile.</param>
+            <returns>An instance of the fluent <see cref="T:NLog.Fluent.LogBuilder"/>.</returns>
+        </member>
+        <member name="M:NLog.Fluent.Log.Warn(System.String)">
+            <summary>
+            Starts building a log event at the <c>Warn</c> level.
+            </summary>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is the file path at the time of compile.</param>
+            <returns>An instance of the fluent <see cref="T:NLog.Fluent.LogBuilder"/>.</returns>
+        </member>
+        <member name="M:NLog.Fluent.Log.Error(System.String)">
+            <summary>
+            Starts building a log event at the <c>Error</c> level.
+            </summary>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is the file path at the time of compile.</param>
+            <returns>An instance of the fluent <see cref="T:NLog.Fluent.LogBuilder"/>.</returns>
+        </member>
+        <member name="M:NLog.Fluent.Log.Fatal(System.String)">
+            <summary>
+            Starts building a log event at the <c>Fatal</c> level.
+            </summary>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is the file path at the time of compile.</param>
+            <returns>An instance of the fluent <see cref="T:NLog.Fluent.LogBuilder"/>.</returns>
+        </member>
         <member name="T:NLog.Fluent.LogBuilder">
             <summary>
             A fluent class to build log events for NLog.
@@ -4068,22 +4131,31 @@
             <param name="userStackFrame">Index of the first user stack frame within the stack trace.</param>
             <returns>current <see cref="T:NLog.Fluent.LogBuilder"/> for chaining calls.</returns>
         </member>
-        <member name="M:NLog.Fluent.LogBuilder.Write">
+        <member name="M:NLog.Fluent.LogBuilder.Write(System.String,System.String,System.Int32)">
             <summary>
             Writes the log event to the underlying logger.
             </summary>
+            <param name="callerMemberName">The method or property name of the caller to the method. This is set at by the compiler.</param>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is set at by the compiler.</param>
+            <param name="callerLineNumber">The line number in the source file at which the method is called. This is set at by the compiler.</param>
         </member>
-        <member name="M:NLog.Fluent.LogBuilder.WriteIf(System.Func{System.Boolean})">
+        <member name="M:NLog.Fluent.LogBuilder.WriteIf(System.Func{System.Boolean},System.String,System.String,System.Int32)">
             <summary>
-            Writes the log event to the underlying logger.
+            Writes the log event to the underlying logger if the condition delegate is true.
             </summary>
             <param name="condition">If condition is true, write log event; otherwise ignore event.</param>
+            <param name="callerMemberName">The method or property name of the caller to the method. This is set at by the compiler.</param>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is set at by the compiler.</param>
+            <param name="callerLineNumber">The line number in the source file at which the method is called. This is set at by the compiler.</param>
         </member>
-        <member name="M:NLog.Fluent.LogBuilder.WriteIf(System.Boolean)">
+        <member name="M:NLog.Fluent.LogBuilder.WriteIf(System.Boolean,System.String,System.String,System.Int32)">
             <summary>
-            Writes the log event to the underlying logger.
+            Writes the log event to the underlying logger if the condition is true.
             </summary>
             <param name="condition">If condition is true, write log event; otherwise ignore event.</param>
+            <param name="callerMemberName">The method or property name of the caller to the method. This is set at by the compiler.</param>
+            <param name="callerFilePath">The full path of the source file that contains the caller. This is set at by the compiler.</param>
+            <param name="callerLineNumber">The line number in the source file at which the method is called. This is set at by the compiler.</param>
         </member>
         <member name="T:NLog.Fluent.LoggerExtensions">
             <summary>
@@ -7600,13 +7672,6 @@
             </summary>
             <returns>The time the file was last opened.</returns>
         </member>
-        <member name="P:NLog.Internal.FileAppenders.BaseFileAppender.LastWriteTimeUtc">
-            <summary>
-            Gets the last time the file associated with the appeander is written. The time returned is in  
-            Coordinated Universal Time [UTC] standard.
-            </summary>
-            <returns>The time the file was last written to.</returns>
-        </member>
         <member name="P:NLog.Internal.FileAppenders.BaseFileAppender.CreateFileParameters">
             <summary>
             Gets the file creation parameters.
@@ -7636,13 +7701,6 @@
             </summary>
             <returns>The file creation time.</returns>
         </member>
-        <member name="M:NLog.Internal.FileAppenders.BaseFileAppender.GetFileLastWriteTimeUtc">
-            <summary>
-            Gets the last time the file associated with the appeander is written. The time returned is in Coordinated 
-            Universal Time [UTC] standard.
-            </summary>
-            <returns>The time the file was last written to.</returns>
-        </member>
         <member name="M:NLog.Internal.FileAppenders.BaseFileAppender.GetFileLength">
             <summary>
             Gets the length in bytes of the file associated with the appeander.
@@ -7659,17 +7717,6 @@
             Releases unmanaged and - optionally - managed resources.
             </summary>
             <param name="disposing">True to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        </member>
-        <member name="M:NLog.Internal.FileAppenders.BaseFileAppender.FileTouched">
-            <summary>
-            Updates the last write time of the file.
-            </summary>
-        </member>
-        <member name="M:NLog.Internal.FileAppenders.BaseFileAppender.FileTouched(System.DateTime)">
-            <summary>
-            Updates the last write time of the file to the specified date.
-            </summary>
-            <param name="dateTime">Date and time when the last write occurred in UTC.</param>
         </member>
         <member name="M:NLog.Internal.FileAppenders.BaseFileAppender.CreateFileStream(System.Boolean)">
             <summary>
@@ -7741,13 +7788,6 @@
             Time [UTC] standard.
             </summary>
             <returns>The file creation time.</returns>
-        </member>
-        <member name="M:NLog.Internal.FileAppenders.CountingSingleProcessFileAppender.GetFileLastWriteTimeUtc">
-            <summary>
-            Gets the last time the file associated with the appeander is written. The time returned is in Coordinated 
-            Universal Time [UTC] standard.
-            </summary>
-            <returns>The time the file was last written to.</returns>
         </member>
         <member name="M:NLog.Internal.FileAppenders.CountingSingleProcessFileAppender.GetFileLength">
             <summary>
@@ -7863,6 +7903,14 @@
             Fluch all the allocated appenders. 
             </summary>
         </member>
+        <member name="M:NLog.Internal.FileAppenders.FileAppenderCache.GetFileLastWriteTimeUtc(System.String)">
+            <summary>
+            File Archive Logic uses the File-Creation-TimeStamp to detect if time to archive, and the File-LastWrite-Timestamp to name the archive-file.
+            </summary>
+            <remarks>
+            NLog always closes all relevant appenders during archive operation, so no need to lookup file-appender
+            </remarks>
+        </member>
         <member name="M:NLog.Internal.FileAppenders.FileAppenderCache.InvalidateAppender(System.String)">
             <summary>
             Closes the specified appender and removes it from the list. 
@@ -7922,11 +7970,6 @@
         <member name="P:NLog.Internal.FileAppenders.ICreateFileParameters.FileAttributes">
             <summary>
             Gets or sets the file attributes (Windows only).
-            </summary>
-        </member>
-        <member name="P:NLog.Internal.FileAppenders.ICreateFileParameters.CaptureLastWriteTime">
-            <summary>
-            Should we capture the last write time of a file?
             </summary>
         </member>
         <member name="P:NLog.Internal.FileAppenders.ICreateFileParameters.IsArchivingEnabled">
@@ -7991,13 +8034,6 @@
             Time [UTC] standard.
             </summary>
             <returns>The file creation time.</returns>
-        </member>
-        <member name="M:NLog.Internal.FileAppenders.MutexMultiProcessFileAppender.GetFileLastWriteTimeUtc">
-            <summary>
-            Gets the last time the file associated with the appeander is written. The time returned is in Coordinated 
-            Universal Time [UTC] standard.
-            </summary>
-            <returns>The time the file was last written to.</returns>
         </member>
         <member name="M:NLog.Internal.FileAppenders.MutexMultiProcessFileAppender.GetFileLength">
             <summary>
@@ -8080,13 +8116,6 @@
             </summary>
             <returns>The file creation time.</returns>
         </member>
-        <member name="M:NLog.Internal.FileAppenders.RetryingMultiProcessFileAppender.GetFileLastWriteTimeUtc">
-            <summary>
-            Gets the last time the file associated with the appeander is written. The time returned is in Coordinated 
-            Universal Time [UTC] standard.
-            </summary>
-            <returns>The time the file was last written to.</returns>
-        </member>
         <member name="M:NLog.Internal.FileAppenders.RetryingMultiProcessFileAppender.GetFileLength">
             <summary>
             Gets the length in bytes of the file associated with the appeander.
@@ -8144,13 +8173,6 @@
             Time [UTC] standard.
             </summary>
             <returns>The file creation time.</returns>
-        </member>
-        <member name="M:NLog.Internal.FileAppenders.SingleProcessFileAppender.GetFileLastWriteTimeUtc">
-            <summary>
-            Gets the last time the file associated with the appeander is written. The time returned is in Coordinated 
-            Universal Time [UTC] standard.
-            </summary>
-            <returns>The time the file was last written to.</returns>
         </member>
         <member name="M:NLog.Internal.FileAppenders.SingleProcessFileAppender.GetFileLength">
             <summary>
@@ -8962,6 +8984,18 @@
             <param name="file">optional file</param>
             <returns></returns>
         </member>
+        <member name="F:NLog.Internal.PathHelpers.DirectorySeparatorChars">
+            <summary>
+            Cached directory separator char array to avoid memory allocation on each method call.
+            </summary>
+        </member>
+        <member name="M:NLog.Internal.PathHelpers.TrimDirectorySeparators(System.String)">
+            <summary>
+            Trims directory separators from the path
+            </summary>
+            <param name="path">path, could be null</param>
+            <returns>never null</returns>
+        </member>
         <member name="T:NLog.Internal.PlatformDetector">
             <summary>
             Detects the platform the NLog is running on.
@@ -9421,13 +9455,14 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:NLog.Internal.SingleItemOptimizedHashSet`1.SingleItemScopedInsert.#ctor(`0,NLog.Internal.SingleItemOptimizedHashSet{`0}@,System.Boolean)">
+        <member name="M:NLog.Internal.SingleItemOptimizedHashSet`1.SingleItemScopedInsert.#ctor(`0,NLog.Internal.SingleItemOptimizedHashSet{`0}@,System.Boolean,System.Collections.Generic.IEqualityComparer{`0})">
             <summary>
             Insert single item on scope start, and remove on scope exit
             </summary>
             <param name="singleItem">Item to insert in scope</param>
             <param name="existing">Existing hashset to update</param>
             <param name="forceHashSet">Force allocation of real hashset-container</param>
+            <param name="comparer">HashSet EqualityComparer</param>
         </member>
         <member name="M:NLog.Internal.SingleItemOptimizedHashSet`1.Add(`0)">
             <summary>
@@ -9697,6 +9732,30 @@
             </summary>
             <param name="builder">StringBuilder source</param>
             <param name="destination">StringBuilder destination</param>
+        </member>
+        <member name="M:NLog.Internal.StringBuilderExt.IndexOf(System.Text.StringBuilder,System.Char,System.Int32)">
+            <summary>
+            Scans the StringBuilder for the position of needle character
+            </summary>
+            <param name="builder">StringBuilder source</param>
+            <param name="needle">needle character to search for</param>
+            <param name="startPos"></param>
+            <returns>Index of the first occurrence (Else -1)</returns>
+        </member>
+        <member name="M:NLog.Internal.StringBuilderExt.EqualTo(System.Text.StringBuilder,System.Text.StringBuilder)">
+            <summary>
+            Compares the contents of two StringBuilders
+            </summary>
+            <remarks>
+            Correct implementation of <see cref="M:System.Text.StringBuilder.Equals(System.Text.StringBuilder)" /> that also works when <see cref="P:System.Text.StringBuilder.Capacity"/> is not the same
+            </remarks>
+            <returns>True when content is the same</returns>
+        </member>
+        <member name="M:NLog.Internal.StringBuilderExt.EqualTo(System.Text.StringBuilder,System.String)">
+            <summary>
+            Compares the contents of a StringBuilder and a String
+            </summary>
+            <returns>True when content is the same</returns>
         </member>
         <member name="M:NLog.Internal.StringBuilderExt.Append2DigitsZeroPadded(System.Text.StringBuilder,System.Int32)">
             <summary>
@@ -10110,6 +10169,46 @@
             <param name="fallback">Fallback value to return in case of exception.</param>
             <returns>Result returned by the provided function or fallback value in case of exception.</returns>
         </member>
+        <member name="M:NLog.ISuppress.Swallow(System.Threading.Tasks.Task)">
+            <summary>
+            Logs an exception is logged at <c>Error</c> level if the provided task does not run to completion.
+            </summary>
+            <param name="task">The task for which to log an error if it does not run to completion.</param>
+            <remarks>This method is useful in fire-and-forget situations, where application logic does not depend on completion of task. This method is avoids C# warning CS4014 in such situations.</remarks>
+        </member>
+        <member name="M:NLog.ISuppress.SwallowAsync(System.Threading.Tasks.Task)">
+            <summary>
+            Returns a task that completes when a specified task to completes. If the task does not run to completion, an exception is logged at <c>Error</c> level. The returned task always runs to completion.
+            </summary>
+            <param name="task">The task for which to log an error if it does not run to completion.</param>
+            <returns>A task that completes in the <see cref="F:System.Threading.Tasks.TaskStatus.RanToCompletion"/> state when <paramref name="task"/> completes.</returns>
+        </member>
+        <member name="M:NLog.ISuppress.SwallowAsync(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Runs async action. If the action throws, the exception is logged at <c>Error</c> level. The exception is not propagated outside of this method.
+            </summary>
+            <param name="asyncAction">Async action to execute.</param>
+            <returns>A task that completes in the <see cref="F:System.Threading.Tasks.TaskStatus.RanToCompletion"/> state when <paramref name="asyncAction"/> completes.</returns>
+        </member>
+        <member name="M:NLog.ISuppress.SwallowAsync``1(System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Runs the provided async function and returns its result. If the task does not run to completion, an exception is logged at <c>Error</c> level.
+            The exception is not propagated outside of this method; a default value is returned instead.
+            </summary>
+            <typeparam name="TResult">Return type of the provided function.</typeparam>
+            <param name="asyncFunc">Async function to run.</param>
+            <returns>A task that represents the completion of the supplied task. If the supplied task ends in the <see cref="F:System.Threading.Tasks.TaskStatus.RanToCompletion"/> state, the result of the new task will be the result of the supplied task; otherwise, the result of the new task will be the default value of type <typeparamref name="TResult"/>.</returns>
+        </member>
+        <member name="M:NLog.ISuppress.SwallowAsync``1(System.Func{System.Threading.Tasks.Task{``0}},``0)">
+            <summary>
+            Runs the provided async function and returns its result. If the task does not run to completion, an exception is logged at <c>Error</c> level.
+            The exception is not propagated outside of this method; a fallback value is returned instead.
+            </summary>
+            <typeparam name="TResult">Return type of the provided function.</typeparam>
+            <param name="asyncFunc">Async function to run.</param>
+            <param name="fallback">Fallback value to return if the task does not end in the <see cref="F:System.Threading.Tasks.TaskStatus.RanToCompletion"/> state.</param>
+            <returns>A task that represents the completion of the supplied task. If the supplied task ends in the <see cref="F:System.Threading.Tasks.TaskStatus.RanToCompletion"/> state, the result of the new task will be the result of the supplied task; otherwise, the result of the new task will be the fallback value.</returns>
+        </member>
         <member name="T:NLog.IValueFormatter">
             <summary>
             Render a message template property to a string
@@ -10142,6 +10241,15 @@
             </summary>
             <docgen category='Rendering Options' order='10' />
         </member>
+        <member name="P:NLog.LayoutRenderers.AllEventPropertiesLayoutRenderer.IncludeCallerInformation">
+            <summary>
+            Also render the caller information attributes? (<see cref="T:System.Runtime.CompilerServices.CallerMemberNameAttribute"/>,
+            <see cref="T:System.Runtime.CompilerServices.CallerFilePathAttribute"/>, <see cref="T:System.Runtime.CompilerServices.CallerLineNumberAttribute"/>). 
+            
+            See https://msdn.microsoft.com/en-us/library/hh534540.aspx
+            </summary>
+            <docgen category='Rendering Options' order='10' />
+        </member>
         <member name="P:NLog.LayoutRenderers.AllEventPropertiesLayoutRenderer.Format">
             <summary>
             Gets or sets how key/value pairs will be formatted.
@@ -10154,6 +10262,20 @@
             </summary>
             <param name="builder">The <see cref="T:System.Text.StringBuilder"/> to append the rendered data to.</param>
             <param name="logEvent">Logging event.</param>
+        </member>
+        <member name="F:NLog.LayoutRenderers.AllEventPropertiesLayoutRenderer.CallerInformationAttributeNames">
+            <summary>
+            The names of caller information attributes.
+            https://msdn.microsoft.com/en-us/library/hh534540.aspx
+            TODO NLog ver. 5 - Remove these properties
+            </summary>
+        </member>
+        <member name="M:NLog.LayoutRenderers.AllEventPropertiesLayoutRenderer.GetProperties(NLog.LogEventInfo)">
+             <summary>
+             Also render the call attributes? (<see cref="T:System.Runtime.CompilerServices.CallerMemberNameAttribute"/>,
+             <see cref="T:System.Runtime.CompilerServices.CallerFilePathAttribute"/>, <see cref="T:System.Runtime.CompilerServices.CallerLineNumberAttribute"/>). 
+             </summary>
+            
         </member>
         <member name="T:NLog.LayoutRenderers.AmbientPropertyAttribute">
             <summary>
@@ -10267,6 +10389,12 @@
             </summary>
             <param name="builder">The <see cref="T:System.Text.StringBuilder"/> to append the rendered data to.</param>
             <param name="logEvent">Logging event.</param>
+        </member>
+        <member name="M:NLog.LayoutRenderers.AssemblyVersionLayoutRenderer.GetAssembly">
+            <summary>
+            Gets the assembly specified by <see cref="P:NLog.LayoutRenderers.AssemblyVersionLayoutRenderer.Name"/>, or entry assembly otherwise
+            </summary>
+            <returns>Found assembly</returns>
         </member>
         <member name="T:NLog.LayoutRenderers.AssemblyVersionType">
             <summary>
@@ -11346,7 +11474,7 @@
         </member>
         <member name="T:NLog.LayoutRenderers.LongDateLayoutRenderer">
             <summary>
-            The date and time in a long, sortable format yyyy-MM-dd HH:mm:ss.mmm.
+            The date and time in a long, sortable format yyyy-MM-dd HH:mm:ss.ffff.
             </summary>
         </member>
         <member name="P:NLog.LayoutRenderers.LongDateLayoutRenderer.UniversalTime">
@@ -11357,7 +11485,7 @@
         </member>
         <member name="M:NLog.LayoutRenderers.LongDateLayoutRenderer.Append(System.Text.StringBuilder,NLog.LogEventInfo)">
             <summary>
-            Renders the date in the long format (yyyy-MM-dd HH:mm:ss.mmm) and appends it to the specified <see cref="T:System.Text.StringBuilder" />.
+            Renders the date in the long format (yyyy-MM-dd HH:mm:ss.ffff) and appends it to the specified <see cref="T:System.Text.StringBuilder" />.
             </summary>
             <param name="builder">The <see cref="T:System.Text.StringBuilder"/> to append the rendered data to.</param>
             <param name="logEvent">Logging event.</param>
@@ -12486,11 +12614,11 @@
             </summary>
             <docgen category='Advanced Options' order='10' />
         </member>
+        <member name="M:NLog.LayoutRenderers.Wrappers.FileSystemNormalizeLayoutRendererWrapper.RenderInnerAndTransform(NLog.LogEventInfo,System.Text.StringBuilder,System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="M:NLog.LayoutRenderers.Wrappers.FileSystemNormalizeLayoutRendererWrapper.TransformFormattedMesssage(System.Text.StringBuilder)">
-            <summary>
-            Replaces all non-safe characters with underscore to make valid filepath
-            </summary>
-            <param name="target">Output to be transformed.</param>
+            <inheritdoc/>
         </member>
         <member name="T:NLog.LayoutRenderers.Wrappers.JsonEncodeLayoutRendererWrapper">
             <summary>
@@ -12514,18 +12642,11 @@
             </summary>
             <docgen category="Transformation Options" order="10"/>
         </member>
-        <member name="M:NLog.LayoutRenderers.Wrappers.JsonEncodeLayoutRendererWrapper.Append(System.Text.StringBuilder,NLog.LogEventInfo)">
-            <summary>
-            Render to local target using Inner Layout, and then transform before final append
-            </summary>
-            <param name="builder"></param>
-            <param name="logEvent"></param>
+        <member name="M:NLog.LayoutRenderers.Wrappers.JsonEncodeLayoutRendererWrapper.RenderInnerAndTransform(NLog.LogEventInfo,System.Text.StringBuilder,System.Int32)">
+            <inheritdoc/>
         </member>
         <member name="M:NLog.LayoutRenderers.Wrappers.JsonEncodeLayoutRendererWrapper.TransformFormattedMesssage(System.Text.StringBuilder)">
-            <summary>
-            Post-processes the rendered message. 
-            </summary>
-            <param name="target">The text to be JSON-encoded.</param>
+            <inheritdoc/>
         </member>
         <member name="T:NLog.LayoutRenderers.Wrappers.LowercaseLayoutRendererWrapper">
             <summary>
@@ -12550,16 +12671,19 @@
             </summary>
             <docgen category='Transformation Options' order='10' />
         </member>
+        <member name="M:NLog.LayoutRenderers.Wrappers.LowercaseLayoutRendererWrapper.RenderInnerAndTransform(NLog.LogEventInfo,System.Text.StringBuilder,System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="M:NLog.LayoutRenderers.Wrappers.LowercaseLayoutRendererWrapper.TransformFormattedMesssage(System.Text.StringBuilder)">
-            <summary>
-            Post-processes the rendered message. 
-            </summary>
-            <param name="target">Output to be post-processed.</param>
+            <inheritdoc/>
         </member>
         <member name="T:NLog.LayoutRenderers.Wrappers.OnExceptionLayoutRendererWrapper">
             <summary>
             Only outputs the inner layout when exception has been defined for log message.
             </summary>
+        </member>
+        <member name="M:NLog.LayoutRenderers.Wrappers.OnExceptionLayoutRendererWrapper.RenderInnerAndTransform(NLog.LogEventInfo,System.Text.StringBuilder,System.Int32)">
+            <inheritdoc/>
         </member>
         <member name="M:NLog.LayoutRenderers.Wrappers.OnExceptionLayoutRendererWrapper.Transform(System.String)">
             <summary>
@@ -12567,15 +12691,6 @@
             </summary>
             <param name="text">Output to be transform.</param>
             <returns>Transformed text.</returns>
-        </member>
-        <member name="M:NLog.LayoutRenderers.Wrappers.OnExceptionLayoutRendererWrapper.RenderInner(NLog.LogEventInfo)">
-            <summary>
-            Renders the inner layout contents.
-            </summary>
-            <param name="logEvent">The log event.</param>
-            <returns>
-            Contents of inner layout.
-            </returns>
         </member>
         <member name="T:NLog.LayoutRenderers.Wrappers.PaddingHorizontalAlignment">
             <summary>
@@ -12738,11 +12853,11 @@
             </summary>
             <docgen category='Transformation Options' order='10' />
         </member>
+        <member name="M:NLog.LayoutRenderers.Wrappers.ReplaceNewLinesLayoutRendererWrapper.RenderInnerAndTransform(NLog.LogEventInfo,System.Text.StringBuilder,System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="M:NLog.LayoutRenderers.Wrappers.ReplaceNewLinesLayoutRendererWrapper.TransformFormattedMesssage(System.Text.StringBuilder)">
-            <summary>
-            Post-processes the rendered message. 
-            </summary>
-            <param name="target">Output to be post-processed.</param>
+            <inheritdoc/>
         </member>
         <member name="T:NLog.LayoutRenderers.Wrappers.Rot13LayoutRendererWrapper">
             <summary>
@@ -12767,17 +12882,16 @@
             <param name="encodedValue">The string to be encoded/decoded.</param>
             <returns>Encoded/Decoded text.</returns>
         </member>
-        <member name="M:NLog.LayoutRenderers.Wrappers.Rot13LayoutRendererWrapper.DecodeRot13(System.Text.StringBuilder)">
+        <member name="M:NLog.LayoutRenderers.Wrappers.Rot13LayoutRendererWrapper.RenderInnerAndTransform(NLog.LogEventInfo,System.Text.StringBuilder,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:NLog.LayoutRenderers.Wrappers.Rot13LayoutRendererWrapper.TransformFormattedMesssage(System.Text.StringBuilder)">
+            <inheritdoc/>
+        </member>
+        <member name="M:NLog.LayoutRenderers.Wrappers.Rot13LayoutRendererWrapper.DecodeRot13(System.Text.StringBuilder,System.Int32)">
             <summary>
             Encodes/Decodes ROT-13-encoded string.
             </summary>
-            <param name="encodedValue">The string to be encoded/decoded.</param>
-        </member>
-        <member name="M:NLog.LayoutRenderers.Wrappers.Rot13LayoutRendererWrapper.TransformFormattedMesssage(System.Text.StringBuilder)">
-            <summary>
-            Post-processes the rendered message. 
-            </summary>
-            <param name="target">Output to be transform.</param>
         </member>
         <member name="T:NLog.LayoutRenderers.Wrappers.TrimWhiteSpaceLayoutRendererWrapper">
             <summary>
@@ -12796,11 +12910,11 @@
             <value>A value of <c>true</c> if lower case conversion should be applied; otherwise, <c>false</c>.</value>
             <docgen category='Transformation Options' order='10' />
         </member>
+        <member name="M:NLog.LayoutRenderers.Wrappers.TrimWhiteSpaceLayoutRendererWrapper.RenderInnerAndTransform(NLog.LogEventInfo,System.Text.StringBuilder,System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="M:NLog.LayoutRenderers.Wrappers.TrimWhiteSpaceLayoutRendererWrapper.TransformFormattedMesssage(System.Text.StringBuilder)">
-            <summary>
-            Removes white-spaces from both sides of the provided target
-            </summary>
-            <param name="target">Output to be transform.</param>
+            <inheritdoc/>
         </member>
         <member name="T:NLog.LayoutRenderers.Wrappers.UppercaseLayoutRendererWrapper">
             <summary>
@@ -12830,11 +12944,11 @@
             </summary>
             <docgen category='Transformation Options' order='10' />
         </member>
+        <member name="M:NLog.LayoutRenderers.Wrappers.UppercaseLayoutRendererWrapper.RenderInnerAndTransform(NLog.LogEventInfo,System.Text.StringBuilder,System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="M:NLog.LayoutRenderers.Wrappers.UppercaseLayoutRendererWrapper.TransformFormattedMesssage(System.Text.StringBuilder)">
-            <summary>
-            Post-processes the rendered message. 
-            </summary>
-            <param name="target">Output to be post-processed.</param>
+            <inheritdoc/>
         </member>
         <member name="T:NLog.LayoutRenderers.Wrappers.UrlEncodeLayoutRendererWrapper">
             <summary>
@@ -12885,18 +12999,11 @@
             </summary>
             <docgen category="Transformation Options" order="10"/>
         </member>
-        <member name="M:NLog.LayoutRenderers.Wrappers.WhenEmptyLayoutRendererWrapper.TransformFormattedMesssage(System.Text.StringBuilder)">
-            <summary>
-            Transforms the output of another layout.
-            </summary>
-            <param name="target">Output to be transform.</param>
+        <member name="M:NLog.LayoutRenderers.Wrappers.WhenEmptyLayoutRendererWrapper.RenderInnerAndTransform(NLog.LogEventInfo,System.Text.StringBuilder,System.Int32)">
+            <inheritdoc/>
         </member>
-        <member name="M:NLog.LayoutRenderers.Wrappers.WhenEmptyLayoutRendererWrapper.Append(System.Text.StringBuilder,NLog.LogEventInfo)">
-            <summary>
-            Renders the inner layout contents.
-            </summary>
-            <param name="builder"><see cref="T:System.Text.StringBuilder"/> for the result</param>
-            <param name="logEvent">The log event.</param>
+        <member name="M:NLog.LayoutRenderers.Wrappers.WhenEmptyLayoutRendererWrapper.TransformFormattedMesssage(System.Text.StringBuilder)">
+            <inheritdoc/>
         </member>
         <member name="T:NLog.LayoutRenderers.Wrappers.WhenLayoutRendererWrapper">
             <summary>
@@ -12915,18 +13022,11 @@
             </summary>
             <docgen category="Transformation Options" order="10"/>
         </member>
-        <member name="M:NLog.LayoutRenderers.Wrappers.WhenLayoutRendererWrapper.TransformFormattedMesssage(System.Text.StringBuilder)">
-            <summary>
-            Transforms the output of another layout.
-            </summary>
-            <param name="target">Output to be transform.</param>
+        <member name="M:NLog.LayoutRenderers.Wrappers.WhenLayoutRendererWrapper.RenderInnerAndTransform(NLog.LogEventInfo,System.Text.StringBuilder,System.Int32)">
+            <inheritdoc/>
         </member>
-        <member name="M:NLog.LayoutRenderers.Wrappers.WhenLayoutRendererWrapper.Append(System.Text.StringBuilder,NLog.LogEventInfo)">
-            <summary>
-            Renders the inner layout contents.
-            </summary>
-            <param name="builder"><see cref="T:System.Text.StringBuilder"/> for the result</param>
-            <param name="logEvent">The log event.</param>
+        <member name="M:NLog.LayoutRenderers.Wrappers.WhenLayoutRendererWrapper.TransformFormattedMesssage(System.Text.StringBuilder)">
+            <inheritdoc/>
         </member>
         <member name="T:NLog.LayoutRenderers.Wrappers.WrapLineLayoutRendererWrapper">
             <summary>
@@ -12980,6 +13080,14 @@
             <param name="builder">The <see cref="T:System.Text.StringBuilder"/> to append the rendered data to.</param>
             <param name="logEvent">Logging event.</param>
         </member>
+        <member name="M:NLog.LayoutRenderers.Wrappers.WrapperLayoutRendererBase.RenderInnerAndTransform(NLog.LogEventInfo,System.Text.StringBuilder,System.Int32)">
+            <summary>
+            Appends the rendered output from <see cref="P:NLog.LayoutRenderers.Wrappers.WrapperLayoutRendererBase.Inner"/>-layout and transforms the added output (when necessary)
+            </summary>
+            <param name="logEvent">Logging event.</param>
+            <param name="builder">The <see cref="T:System.Text.StringBuilder"/> to append the rendered data to.</param>
+            <param name="orgLength">Start position for any necessary transformation of <see cref="T:System.Text.StringBuilder"/>.</param>
+        </member>
         <member name="M:NLog.LayoutRenderers.Wrappers.WrapperLayoutRendererBase.Transform(NLog.LogEventInfo,System.String)">
             <summary>
             Transforms the output of another layout.
@@ -13010,11 +13118,10 @@
             </summary>
         </member>
         <member name="M:NLog.LayoutRenderers.Wrappers.WrapperLayoutRendererBuilderBase.Append(System.Text.StringBuilder,NLog.LogEventInfo)">
-            <summary>
-            Render to local target using Inner Layout, and then transform before final append
-            </summary>
-            <param name="builder"></param>
-            <param name="logEvent"></param>
+            <inheritdoc/>
+        </member>
+        <member name="M:NLog.LayoutRenderers.Wrappers.WrapperLayoutRendererBuilderBase.RenderInnerAndTransform(NLog.LogEventInfo,System.Text.StringBuilder,System.Int32)">
+            <inheritdoc/>
         </member>
         <member name="M:NLog.LayoutRenderers.Wrappers.WrapperLayoutRendererBuilderBase.TransformFormattedMesssage(NLog.LogEventInfo,System.Text.StringBuilder)">
             <summary>
@@ -14552,17 +14659,17 @@
             </summary>
         </member>
         <member name="T:NLog.Logger">
-            <summary>
-            Logging methods which only are executed when the DEBUG conditional compilation symbol is set.
-            </summary>
-            <remarks>
-            The DEBUG conditional compilation symbol is default enabled (only) in a debug build.
+             <content>
+             Logging methods which only are executed when the DEBUG conditional compilation symbol is set.
             
-            If the DEBUG conditional compilation symbol isn't set in the calling library, the compiler will remove all the invocations to these methods. 
-            This could lead to better performance. 
-            
-            See: https://msdn.microsoft.com/en-us/library/4xssyw96%28v=vs.90%29.aspx
-            </remarks>
+             Remarks:
+             The DEBUG conditional compilation symbol is default enabled (only) in a debug build.
+             
+             If the DEBUG conditional compilation symbol isn't set in the calling library, the compiler will remove all the invocations to these methods. 
+             This could lead to better performance. 
+             
+             See: https://msdn.microsoft.com/en-us/library/4xssyw96%28v=vs.90%29.aspx
+             </content>
             <summary>
             Provides logging interface and utility functions.
             </summary>
@@ -17934,6 +18041,45 @@
             <param name="fallback">Fallback value to return in case of exception.</param>
             <returns>Result returned by the provided function or fallback value in case of exception.</returns>
         </member>
+        <member name="M:NLog.Logger.Swallow(System.Threading.Tasks.Task)">
+            <summary>
+            Logs an exception is logged at <c>Error</c> level if the provided task does not run to completion.
+            </summary>
+            <param name="task">The task for which to log an error if it does not run to completion.</param>
+            <remarks>This method is useful in fire-and-forget situations, where application logic does not depend on completion of task. This method is avoids C# warning CS4014 in such situations.</remarks>
+        </member>
+        <member name="M:NLog.Logger.SwallowAsync(System.Threading.Tasks.Task)">
+            <summary>
+            Returns a task that completes when a specified task to completes. If the task does not run to completion, an exception is logged at <c>Error</c> level. The returned task always runs to completion.
+            </summary>
+            <param name="task">The task for which to log an error if it does not run to completion.</param>
+            <returns>A task that completes in the <see cref="F:System.Threading.Tasks.TaskStatus.RanToCompletion"/> state when <paramref name="task"/> completes.</returns>
+        </member>
+        <member name="M:NLog.Logger.SwallowAsync(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Runs async action. If the action throws, the exception is logged at <c>Error</c> level. The exception is not propagated outside of this method.
+            </summary>
+            <param name="asyncAction">Async action to execute.</param>
+        </member>
+        <member name="M:NLog.Logger.SwallowAsync``1(System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Runs the provided async function and returns its result. If the task does not run to completion, an exception is logged at <c>Error</c> level.
+            The exception is not propagated outside of this method; a default value is returned instead.
+            </summary>
+            <typeparam name="TResult">Return type of the provided function.</typeparam>
+            <param name="asyncFunc">Async function to run.</param>
+            <returns>A task that represents the completion of the supplied task. If the supplied task ends in the <see cref="F:System.Threading.Tasks.TaskStatus.RanToCompletion"/> state, the result of the new task will be the result of the supplied task; otherwise, the result of the new task will be the default value of type <typeparamref name="TResult"/>.</returns>
+        </member>
+        <member name="M:NLog.Logger.SwallowAsync``1(System.Func{System.Threading.Tasks.Task{``0}},``0)">
+            <summary>
+            Runs the provided async function and returns its result. If the task does not run to completion, an exception is logged at <c>Error</c> level.
+            The exception is not propagated outside of this method; a fallback value is returned instead.
+            </summary>
+            <typeparam name="TResult">Return type of the provided function.</typeparam>
+            <param name="asyncFunc">Async function to run.</param>
+            <param name="fallback">Fallback value to return if the task does not end in the <see cref="F:System.Threading.Tasks.TaskStatus.RanToCompletion"/> state.</param>
+            <returns>A task that represents the completion of the supplied task. If the supplied task ends in the <see cref="F:System.Threading.Tasks.TaskStatus.RanToCompletion"/> state, the result of the new task will be the result of the supplied task; otherwise, the result of the new task will be the fallback value.</returns>
+        </member>
         <member name="M:NLog.Logger.OnLoggerReconfigured(System.EventArgs)">
             <summary>
             Raises the event when the logger is reconfigured. 
@@ -18591,6 +18737,12 @@
             Instructs the inner channel to display a user interface if one is required to initialize the channel prior to using it.
             </summary>
         </member>
+        <member name="P:NLog.LogReceiverService.IWcfLogReceiverClient.CookieContainer">
+            <summary>
+            Gets or sets the cookie container.
+            </summary>
+            <value>The cookie container.</value>
+        </member>
         <member name="T:NLog.LogReceiverService.LogReceiverForwardingService">
             <summary>
             Implementation of <see cref="T:NLog.LogReceiverService.ILogReceiverServer" /> which forwards received logs through <see cref="T:NLog.LogManager"/> or a given <see cref="T:NLog.LogFactory"/>.
@@ -18964,6 +19116,12 @@
             Instructs the inner channel to display a user interface if one is required to initialize the channel prior to using it.
             </summary>
         </member>
+        <member name="P:NLog.LogReceiverService.WcfLogReceiverClient.CookieContainer">
+            <summary>
+            Gets or sets the cookie container.
+            </summary>
+            <value>The cookie container.</value>
+        </member>
         <member name="M:NLog.LogReceiverService.WcfLogReceiverClient.EndClose(System.IAsyncResult)">
             <summary>
             Completes an asynchronous operation to close a communication object.
@@ -19120,6 +19278,12 @@
             <summary>
             Occurs when Close operation has completed.
             </summary>
+        </member>
+        <member name="P:NLog.LogReceiverService.WcfLogReceiverClientBase`1.CookieContainer">
+            <summary>
+            Gets or sets the cookie container.
+            </summary>
+            <value>The cookie container.</value>
         </member>
         <member name="M:NLog.LogReceiverService.WcfLogReceiverClientBase`1.OpenAsync">
             <summary>
@@ -21656,12 +21820,10 @@
             <param name="depth">The current depth (level) of recursion.</param>
             <returns>Object serialized succesfully (true/false).</returns>
         </member>
-        <member name="M:NLog.Targets.DefaultJsonSerializer.SkipQuotes(System.TypeCode)">
+        <member name="M:NLog.Targets.DefaultJsonSerializer.SkipQuotes(System.Object,System.TypeCode)">
             <summary>
             No quotes needed for this type?
             </summary>
-            <param name="objTypeCode"></param>
-            <returns></returns>
         </member>
         <member name="M:NLog.Targets.DefaultJsonSerializer.IsNumericTypeCode(System.TypeCode,System.Boolean)">
             <summary>
@@ -22265,11 +22427,6 @@
             </summary>
             <docgen category='Output Options' order='10' />
         </member>
-        <member name="P:NLog.Targets.FileTarget.NLog#Internal#FileAppenders#ICreateFileParameters#CaptureLastWriteTime">
-            <summary>
-            Should we capture the last write time of a file?
-            </summary>
-        </member>
         <member name="P:NLog.Targets.FileTarget.LineEnding">
             <summary>
             Gets or sets the line ending mode.
@@ -22301,6 +22458,13 @@
             <summary>
             Gets or sets the maximum number of seconds that files are kept open. If this number is negative the files are 
             not automatically closed after a period of inactivity.
+            </summary>
+            <docgen category='Performance Tuning Options' order='10' />
+        </member>
+        <member name="P:NLog.Targets.FileTarget.OpenFileFlushTimeout">
+            <summary>
+            Gets or sets the maximum number of seconds before open files are flushed. If this number is negative or zero
+            the files are not flushed by timer.
             </summary>
             <docgen category='Performance Tuning Options' order='10' />
         </member>
@@ -23616,14 +23780,28 @@
             </summary>
             <param name="name">Name of the target.</param>
         </member>
+        <member name="M:NLog.Targets.MethodCallTarget.#ctor(System.String,System.Action{NLog.LogEventInfo,System.Object[]})">
+            <summary>
+            Initializes a new instance of the <see cref="T:NLog.Targets.MethodCallTarget" /> class.
+            </summary>
+            <param name="name">Name of the target.</param>
+            <param name="logEventAction">Method to call on logevent.</param>
+        </member>
         <member name="M:NLog.Targets.MethodCallTarget.InitializeTarget">
             <summary>
             Initializes the target.
             </summary>
         </member>
-        <member name="M:NLog.Targets.MethodCallTarget.DoInvoke(System.Object[])">
+        <member name="M:NLog.Targets.MethodCallTarget.DoInvoke(System.Object[],NLog.Common.AsyncLogEventInfo)">
             <summary>
             Calls the specified Method.
+            </summary>
+            <param name="parameters">Method parameters.</param>
+            <param name="logEvent">The logging event.</param>
+        </member>
+        <member name="M:NLog.Targets.MethodCallTarget.DoInvoke(System.Object[])">
+            <summary>
+            Calls the specified Method. 
             </summary>
             <param name="parameters">Method parameters.</param>
         </member>
@@ -26552,6 +26730,19 @@
             classes.
             </summary>
             <param name="logEvent">Logging event to be written out.</param>
+        </member>
+        <member name="T:NLog.Targets.ZipArchiveFileCompressor">
+            <summary>
+            Builtin IFileCompressor implementation utilizing the .Net4.5 specific <see cref="T:System.IO.Compression.ZipArchive"/> 
+            and is used as the default value for <see cref="P:NLog.Targets.FileTarget.FileCompressor"/> on .Net4.5.
+            So log files created via <see cref="T:NLog.Targets.FileTarget"/> can be zipped when archived
+            w/o 3rd party zip library when run on .Net4.5 or higher.
+            </summary>
+        </member>
+        <member name="M:NLog.Targets.ZipArchiveFileCompressor.CompressFile(System.String,System.String)">
+            <summary>
+            Implements <see cref="M:NLog.Targets.IFileCompressor.CompressFile(System.String,System.String)"/> using the .Net4.5 specific <see cref="T:System.IO.Compression.ZipArchive"/>
+            </summary>
         </member>
         <member name="T:NLog.Time.AccurateLocalTimeSource">
             <summary>
