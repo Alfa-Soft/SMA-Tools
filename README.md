@@ -8,6 +8,8 @@
 ### Sunny Portal CSV Merger
 
 Tool, welches exportierte CSV Dateien aus dem Sunny Portal in ein .xls Datei zusammenführt.
+([Download](https://github.com/Alfa-Soft/SMA-Tools/blob/main/CSV-Converter/Release/SMA.CSV.Merger.WinApp.V01.zip))
+
 
 Anwendung:
 -	Ordner welcher die CSV-Dateien beinhaltet oder Dateien per Drag&Drop hinzufügen
@@ -31,6 +33,8 @@ In Excel können die Daten z.B. in dieser Form dargestellt werden.
 .
 
 ### Sunny Portal CSV Merger CLI
+([Download](https://github.com/Alfa-Soft/SMA-Tools/blob/main/CSV-Converter/Release/SMA.CSV.Merger.Console.V01.zip))
+
 
 SMA.CSV.Merger.exe
 - Argument 1: Output
