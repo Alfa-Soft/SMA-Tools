@@ -29,6 +29,8 @@ In Excel können die Daten z.B. in dieser Form dargestellt werden.
 -   speichern als ".xlsx"
 
 
+Rückfragen gerne  an: Mario.x@gmx.net
+
 
 .
 
